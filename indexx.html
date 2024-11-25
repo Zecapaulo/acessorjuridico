@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente Juridico</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="img/favicon.png" type="image/x-icon">
+    <!-- Link para o Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Link para o Bootstrap (caso precise usar outros componentes do Bootstrap) -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+
+<body>
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/generative-ai": "https://esm.run/@google/generative-ai"
+        }
+      }
+    </script>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="img/logo.png" alt="Profile" class="profile-img">
+            </div>
+            <ul class="menu mt-4">
+                <li class="plus"><i class="bi bi-plus"></i></li>
+                <li><i class="bi bi-search"></i></li>
+                <li><i class="bi bi-gear"></i></li>
+            </ul>
+
+            <div class="down-slide">
+                <div class="logo">
+                    <img src="img/profile-image.jpg" alt="Profile" class="profile-img">
+                </div>
+                <ul class="menu">
+                    <li><i class="bi bi-gear"></i></li>
+                </ul>
+            </div>
+        </aside>
+
+
+        <!-- Content Area -->
+        <main class="content">
+            <header>
+            <div class="subtitulo p-4">Olá, Precisa de <br><span class="greeting"  id="greeting">ajuda jurídica</span> <br> em Moçambique?</div>
+                <div class="subtext p-2"> Use um dos prompts mais comuns abaixo ou envie sua própria pergunta para
+                    começar. </div>
+            </header>
+            <div class="prompts">
+                <div class="prompt-card">📋 Elaborar um modelo de contrato de trabalho conforme a legislação
+                    moçambicana.</div>
+                <div class="prompt-card">📩 Fornecer orientações sobre direitos laborais em Moçambique.</div>
+                <div class="prompt-card">📖 Resumir um documento jurídico em linguagem simples.</div>
+                <div class="prompt-card">📖 Resumir um documento jurídico em linguagem simples.</div>
+            </div>
+            <!-- Área que responde ao conteúdo do input -->
+            <div id="questions" class="questions">
+                <!-- As perguntas aparecerão aqui -->
+            </div>
+            <!-- Perguntas do usuário -->
+            <div id="messages" class="messages">
+            </div>
+        </main>
+        <div class="right-content m-2 p-2">
+            <div class="input-area">
+                <textarea id="message" placeholder="Pergunte me qualquer coisa..."></textarea>
+                <div class="actions">
+                    <button class="btn attach">
+                        <i class="fas fa-paperclip"></i> <!-- Ícone de Anexar -->
+                    </button>
+                    <button type="button" id="send-message" class="btn submit color-gray" disabled>
+                        <i class="fas fa-paper-plane"></i> <!-- Ícone de Enviar -->
+                    </button>
+                </div>
+            </div>
+            <div class="actions m-2 p-2">
+                <div class="search-container">
+                    <input type="search" class="search-input" placeholder="Pesquisar..." />
+                    <i class="fas fa-search search-icon"></i> <!-- Ícone dentro do input -->
+                </div>
+            </div>
+
+            <div class="title-list">
+                <h2>Ontem</h2>
+                <ul>
+                    <li>Função de assessor jurídico</li>
+                    <li>Pareceres sobre trabalho</li>
+                    <li>Orientações tributárias</li>
+                </ul>
+
+                <h2>7 dias anteriores</h2>
+                <ul>
+                    <li>Elaboração de contrato de trabalho</li>
+                    <li>Consultoria sobre direitos trabalhistas</li>
+                    <li>Revisão de contratos comerciais</li>
+                    <li>Assessoria sobre licenciamento</li>
+                    <li>Análise de reformas fiscais</li>
+                    <li>Direitos em contratos de serviços</li>
+                </ul>
+
+                <h2>30 dias anteriores</h2>
+                <ul>
+                    <li>Consultoria sobre proteção de dados</li>
+                </ul>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script type="module">
+        import { GoogleGenerativeAI } from "@google/generative-ai";
+
+        // Inicializa o modelo da API
+        const genAI = new GoogleGenerativeAI('AIzaSyBzKjAJS_iJpi0yANsiVnYDfORzvwF2j2w');
+
+        // Referências dos elementos HTML
+        const questionsDiv = document.getElementById("questions");
+        const sendButton = document.getElementById("send-message");
+        const messageInput = document.getElementById("message");
+        const promptCards = document.querySelectorAll(".prompt-card");
+
+        // Adiciona eventos de clique para cada prompt-card
+        promptCards.forEach(card => {
+            card.addEventListener("click", () => {
+                // Captura o texto do prompt sem o ícone inicial
+                const promptText = card.textContent.trim().replace(/^[^\w]+/, '');
+
+                // Envia diretamente o prompt, simulando o preenchimento e envio
+                if (promptText) {
+                    const userQuestionDiv = document.createElement("div");
+                    userQuestionDiv.className = "response-wraper";
+                    userQuestionDiv.innerHTML = `
+                    <div class="profile-img-container">
+                        <img src="img/profile-image.jpg" alt="Profile" class="profile-img">
+                    </div>
+                    <div class="response-area">
+                        <div class="response-container">
+                            <div class="profile">
+                                <p class="response-text">${promptText}</p>
+                            </div>
+                            <div class="response-actions">
+                                <i class="fa fa-edit"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                    const questionsDiv = document.getElementById("questions");
+                    questionsDiv.appendChild(userQuestionDiv);
+
+                    // Chama a função de resposta
+                    run(promptText);
+                }
+            });
+        });
+
+        // Função para converter Markdown básico em HTML
+        function markdownToHTML(text) {
+            return text
+                .replace(/\*\*\*(.*?)\*\*\*/g, "<strong><em>$1</em></strong>") // Negrito e itálico
+                .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Negrito
+                .replace(/\*(.*?)\*/g, "<em>$1</em>") // Itálico com *
+                .replace(/__(.*?)__/g, "<strong>$1</strong>") // Negrito com __
+                .replace(/_(.*?)_/g, "<em>$1</em>") // Itálico com _
+                .replace(/```([\s\S]*?)```/g, "<pre><code>$1</code></pre>") // Blocos de código
+                .replace(/`(.*?)`/g, "<code>$1</code>") // Código inline
+                .replace(/^- (.*?)$/gm, "<ul><li>$1</li></ul>") // Listas não ordenadas com -
+                .replace(/^\* (.*?)$/gm, "<ul><li>$1</li></ul>") // Listas não ordenadas com *
+                .replace(/(?:\r?\n){2,}/g, "<br><br>") // Quebras de linha para parágrafos
+                .replace(/##\s?(.*?)$/gm, "<h2>$1</h2>") // Títulos de nível 2 (##)
+                .replace(/#\s?(.*?)$/gm, "<h1>$1</h1>"); // Títulos de nível 1 (#)
+        }
+
+
+
+        // Função para simular o efeito de digitação com suporte a HTML
+        async function typeEffect(element, html, delay = 10) {
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(html, 'text/html');
+            let nodes = Array.from(doc.body.childNodes);
+
+            for (let node of nodes) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    for (let char of node.nodeValue) {
+                        element.innerHTML += char;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    }
+                } else {
+                    let tempDiv = document.createElement("div");
+                    tempDiv.appendChild(node.cloneNode(true));
+                    element.innerHTML += tempDiv.innerHTML;
+                }
+            }
+        }
+
+        // Função principal para gerar respostas
+        async function run(prompt) {
+            try {
+                const context = "Como assessor jurídico especializado em Moçambique, com experiência em Direito Administrativo, Laboral e Tributário.";
+                const customPrompt = `${context}\nPergunta (resposta objetiva): ${prompt}`;
+
+                const thinkingDiv = document.createElement("div");
+                thinkingDiv.className = "thinking";
+                thinkingDiv.textContent = "Pensando...";
+                questionsDiv.appendChild(thinkingDiv);
+
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+
+                thinkingDiv.remove();
+
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const result = await model.generateContent(customPrompt);
+                const response = await result.response;
+                const responseGPT = await response.text();
+
+                const formattedResponse = markdownToHTML(responseGPT);
+
+                const responseDiv = document.createElement("div");
+                responseDiv.className = "response";
+
+                const messagePara = document.createElement("p");
+                messagePara.className = "response-content";
+                messagePara.innerHTML = ""; // Começa vazio para o efeito de escrita
+
+                responseDiv.appendChild(messagePara);
+
+                const actionsDiv = document.createElement("div");
+                actionsDiv.className = "response-actions";
+                actionsDiv.innerHTML = `
+                    <i class="fa fa-microphone"></i>
+                    <i class="fa fa-copy"></i>
+                    <i class="fa fa-thumbs-up"></i>
+                    <i class="fa fa-thumbs-down"></i>
+                    <i class="fa fa-refresh"></i>
+                `;
+                responseDiv.appendChild(actionsDiv);
+
+                questionsDiv.appendChild(responseDiv);
+
+                // Aplica o efeito de escrita
+                await typeEffect(messagePara, formattedResponse, 10);
+            } catch (error) {
+                console.error("Erro ao gerar conteúdo:", error);
+            }
+        }
+
+        // Ação ao clicar no botão de envio
+        sendButton.addEventListener("click", () => {
+            const userInputMessage = messageInput.value.trim();
+
+            if (userInputMessage) {
+                const userQuestionDiv = document.createElement("div");
+                userQuestionDiv.className = "response-wraper";
+                userQuestionDiv.innerHTML = `
+                    <div class="profile-img-container">
+                        <img src="img/profile-image.jpg" alt="Profile" class="profile-img">
+                    </div>
+                    <div class="response-area">
+                        <div class="response-container">
+                            <div class="profile">
+                                <p class="response-text">${userInputMessage}</p>
+                            </div>
+                            <div class="response-actions">
+                                <i class="fa fa-edit"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                questionsDiv.appendChild(userQuestionDiv);
+
+                run(userInputMessage);
+
+                messageInput.value = "";
+                sendButton.disabled = true;
+            }
+        });
+
+        messageInput.addEventListener("input", () => {
+            sendButton.disabled = !messageInput.value.trim();
+        });
+
+
+    // Aplica o efeito de digitação contínua
+    const greeting = document.getElementById("greeting");
+
+    const phrases = [
+        "ajuda jurídica",
+        "orientações tributárias",
+        "aconselhamento laboral"
+    ];
+
+    let currentIndex = 0;
+    let currentText = "";
+    let isDeleting = false;
+
+    function type() {
+        const fullText = phrases[currentIndex];
+
+        if (isDeleting) {
+            currentText = fullText.slice(0, currentText.length - 1); // Apaga a última letra
+        } else {
+            currentText = fullText.slice(0, currentText.length + 1); // Digita a próxima letra
+        }
+
+        greeting.textContent = currentText; // Atualiza o texto exibido
+
+        // Controla o ciclo de digitação e apagamento
+        if (!isDeleting && currentText === fullText) {
+            // Atraso antes de apagar a frase (2 segundos)
+            setTimeout(() => { isDeleting = true; }, 2000);
+        } else if (isDeleting && currentText === "") {
+            // Atraso antes de mudar para a próxima frase
+            setTimeout(() => {
+                isDeleting = false;
+                currentIndex = (currentIndex + 1) % phrases.length; // Altera para a próxima frase
+            }, 500);
+        }
+
+        // Controle de tempo
+        const speed = isDeleting ? 100 : 150; // Mais rápido para apagar, mais devagar para digitar
+        setTimeout(type, speed); // Chama a função recursivamente
+    }
+
+    // Inicia o efeito de digitação
+    type();
+
+
+    </script>
+
+
+
+
+
+
+</body>
+
+</html>
